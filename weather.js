@@ -2,12 +2,19 @@ var FileReader = require('./filereader');
 var WeatherService = require('./WeatherService');
 var OutputService = require('./OutputService');
 
-var fileReader = new FileReader('data.txt');
+var filename = process.argv[2] || 'data.txt';
+var fileReader = new FileReader(filename);
 var weatherService = new WeatherService();
 var output = new OutputService();
 
 var promises = [];
-var lines = fileReader.readFileAsArray();
+
+try {
+	var lines = fileReader.readFileAsArray();
+} catch (e) {
+	console.error("Your file was not found");
+	process.exit();
+}
 
 lines.forEach((line) => {
 	if(/^[A-Za-z\W]+$/.test(line)) {
