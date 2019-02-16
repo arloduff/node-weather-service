@@ -25,5 +25,7 @@ processor.processRequestPromises(promises)
 	.then((results) => {
 		results.forEach((result) => {
 			output.printWeatherObject(result);
-		});
+		})
+}).catch((err) => {
+	console.error(err);
 });
