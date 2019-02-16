@@ -1,5 +1,5 @@
 var FileReader = require('./filereader');
-var WeatherService = require('./weatherservice');
+var WeatherService = require('./WeatherService');
 var OutputService = require('./OutputService');
 
 var fileReader = new FileReader('data.txt');
