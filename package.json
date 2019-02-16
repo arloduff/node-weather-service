@@ -1,0 +1,12 @@
+{
+  "name": "privy-challenge",
+  "version": "1.0.0",
+  "description": "Coding challenge for Privy",
+  "repository": "https://github.com/arloduff/node-weather-service.git",
+  "main": "weather.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Arlo Duff",
+  "license": "ISC"
+}
