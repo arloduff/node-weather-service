@@ -8,5 +8,7 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Arlo Duff",
-  "license": "ISC"
+  "license": "ISC",
+  "api": "https://api.openweathermap.org/data/2.5/weather",
+  "apikey": "7da574ed52c552e6ad9209354553f404"
 }

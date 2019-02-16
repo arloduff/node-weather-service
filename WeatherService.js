@@ -1,7 +1,8 @@
 var https = require('https');
 
-const API = 'https://api.openweathermap.org/data/2.5/weather';
-const API_KEY = '7da574ed52c552e6ad9209354553f404';
+const CONFIG = require('./package.json');
+const API = CONFIG.api;
+const API_KEY = CONFIG.apikey;
 
 module.exports = class WeatherService {
 	constructor () {}
