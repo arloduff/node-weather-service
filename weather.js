@@ -1,10 +1,12 @@
 var FileReader = require('./filereader');
 var WeatherService = require('./weatherservice');
+var OutputService = require('./OutputService');
 
 var fileReader = new FileReader('data.txt');
 var weatherService = new WeatherService();
-var promises = [];
+var output = new OutputService();
 
+var promises = [];
 var lines = fileReader.readFileAsArray();
 
 lines.forEach((line) => {
@@ -25,7 +27,7 @@ lines.forEach((line) => {
 				})
 			);
 	} else if(/^[0-9]{5},[A-Za-z]+$/.test(line)) {
-		let {zip, country} = line.split(',');
+		let [zip, country] = line.split(',');
 
 		promises.push(
 			weatherService.getByZipcode(zip, country)
@@ -38,13 +40,19 @@ lines.forEach((line) => {
 
 Promise.all(promises)
 	.then((results) => {
+		// Some requests may come back successfully (response code 200) but return a 404 code in their information
+		results = results.filter(result => result.coord);
 		results.sort((a, b) => {
-			if(a.coord.lat < b.coord.lat) {
+			if(parseFloat(a.coord.lat) < parseFloat(b.coord.lat)) {
 				return 1;
-			} else if (a.coord.lat > b.coord.lat) {
+			} else if (parseFloat(a.coord.lat) > parseFloat(b.coord.lat)) {
 				return -1;
 			} else {
 				return 0;
 			}
+		});
+
+		results.forEach((result) => {
+			output.printWeatherObject(result);
 		});
 });
