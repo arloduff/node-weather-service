@@ -1,13 +1,14 @@
-var FileReader = require('./FileReader');
-var WeatherService = require('./WeatherService');
-var OutputService = require('./OutputService');
+let FileReader = require('./FileReader');
+let DataFileProcessor = require('./DataFileProcessor');
+let OutputService = require('./OutputService');
 
-var filename = process.argv[2] || 'data.txt';
-var fileReader = new FileReader(filename);
-var weatherService = new WeatherService();
-var output = new OutputService();
+let filename = process.argv[2] || 'data.txt';
 
-var promises = [];
+let fileReader = new FileReader(filename);
+let processor = new DataFileProcessor();
+let output = new OutputService();
+
+let promises = [];
 
 try {
 	var lines = fileReader.readFileAsArray();
@@ -17,38 +18,13 @@ try {
 }
 
 lines.forEach((line) => {
-	if(/^[A-Za-z\W]+$/.test(line)) {
-		promises.push(
-			weatherService.getByCityName(line)
-			.catch((err) => {
-				console.error(err)
-			})
-		);
-	} else if(/^\-?[0-9]{0,3}(\.[0-9]{0,3})*,\-?[0-9]{0,3}(\.[0-9]{0,3})*$/.test(line)) {
-		let [lat, lon] = line.split(',');
-
-		promises.push(
-			weatherService.getByCoordinates(lat, lon)
-				.catch((err) => {
-					console.error(err)
-				})
-			);
-	} else if(/^[0-9]{5},[A-Za-z]+$/.test(line)) {
-		let [zip, country] = line.split(',');
-
-		promises.push(
-			weatherService.getByZipcode(zip, country)
-				.catch((err) => {
-					console.error(err)
-				})
-			);
-	}
+	promises.push(processor.processData(line));
 });
 
 Promise.all(promises)
 	.then((results) => {
 		// Some requests may come back successfully (response code 200) but return a 404 code in their information
-		results = results.filter(result => result.coord);
+		results = results.filter(result => result && result.coord);
 		results.sort((a, b) => {
 			if(parseFloat(a.coord.lat) < parseFloat(b.coord.lat)) {
 				return 1;
