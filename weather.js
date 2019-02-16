@@ -21,20 +21,8 @@ lines.forEach((line) => {
 	promises.push(processor.processData(line));
 });
 
-Promise.all(promises)
+processor.processRequestPromises(promises)
 	.then((results) => {
-		// Some requests may come back successfully (response code 200) but return a 404 code in their information
-		results = results.filter(result => result && result.coord);
-		results.sort((a, b) => {
-			if(parseFloat(a.coord.lat) < parseFloat(b.coord.lat)) {
-				return 1;
-			} else if (parseFloat(a.coord.lat) > parseFloat(b.coord.lat)) {
-				return -1;
-			} else {
-				return 0;
-			}
-		});
-
 		results.forEach((result) => {
 			output.printWeatherObject(result);
 		});

@@ -31,6 +31,26 @@ module.exports = class DataFileProcessor {
 		return promise;
 	}
 
+	processRequestPromises (promises) {
+		return Promise.all(promises)
+			.then((results) => {
+				// Some requests may come back successfully (response code 200) but return a 404 code in their
+				// information
+				results = results.filter(result => result && result.coord);
+				results.sort((a, b) => {
+					if(parseFloat(a.coord.lat) < parseFloat(b.coord.lat)) {
+						return 1;
+					} else if (parseFloat(a.coord.lat) > parseFloat(b.coord.lat)) {
+						return -1;
+					} else {
+						return 0;
+					}
+				});
+
+				return results;
+			});
+	}
+
 	isCityNameFormat (line) {
 		return /^[A-Za-z\W]+$/.test(line);
 	}
