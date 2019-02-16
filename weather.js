@@ -1,4 +1,4 @@
-var FileReader = require('./filereader');
+var FileReader = require('./FileReader');
 var WeatherService = require('./WeatherService');
 var OutputService = require('./OutputService');
 
